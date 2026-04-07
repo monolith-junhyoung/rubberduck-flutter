@@ -23,10 +23,11 @@ class GyroHoldPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => onHoldStart(),
-      onTapUp: (_) => onHoldEnd(),
-      onTapCancel: onHoldEnd,
+    return Listener(
+      behavior: HitTestBehavior.opaque,
+      onPointerDown: (_) => onHoldStart(),
+      onPointerUp: (_) => onHoldEnd(),
+      onPointerCancel: (_) => onHoldEnd(),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         width: double.infinity,

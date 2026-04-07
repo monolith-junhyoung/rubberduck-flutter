@@ -1,0 +1,86 @@
+<h2>청소난투 앱 구조 방향 선택</h2>
+<p class="subtitle">기준: 조작 + 최소 상태 확인, 자이로 우선, 버튼 보조, 세션 입장형</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">A. 빠른 입장 + 단일 컨트롤 화면</div>
+        <div class="mockup-body">
+          <div class="mock-content" style="margin-bottom:12px;">세션 코드 입력 / 플레이어 이름</div>
+          <div class="mock-content" style="margin-bottom:12px;">연결 상태 · 카운트다운 · 현재 깃발 보유자</div>
+          <div class="placeholder" style="height:140px; margin-bottom:12px;">자이로 활성 영역</div>
+          <div style="display:flex; gap:8px;">
+            <button class="mock-button">보조 ↑</button>
+            <button class="mock-button">보조 ←</button>
+            <button class="mock-button">보조 →</button>
+            <button class="mock-button">보조 ↓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 가장 빠른 MVP</h3>
+      <p>입장 후 바로 컨트롤. 상태는 상단 한 줄 요약만 둔다.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">B. 입장 화면 + 컨트롤 화면 분리</div>
+        <div class="mockup-body">
+          <div class="mock-content" style="margin-bottom:10px;">[1] 입장 화면</div>
+          <div class="mock-input" style="margin-bottom:8px;">플레이어 이름</div>
+          <div class="mock-input" style="margin-bottom:12px;">세션 코드</div>
+          <button class="mock-button" style="margin-bottom:16px;">입장</button>
+          <div class="mock-content" style="margin-bottom:10px;">[2] 컨트롤 화면</div>
+          <div class="placeholder" style="height:90px; margin-bottom:8px;">상태 카드 3개</div>
+          <div class="placeholder" style="height:120px;">자이로 + 보조 버튼 패드</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 운영 현실형</h3>
+      <p>입장 과정을 분리해서 세션 관리와 현장 운영을 안정적으로 가져간다.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">C. 게임 콘솔형 대시보드</div>
+        <div class="mockup-body">
+          <div class="placeholder" style="height:70px; margin-bottom:10px;">상단 세션 상태 바</div>
+          <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div class="mock-sidebar" style="height:170px;">4인 상태판</div>
+            <div class="placeholder" style="flex:1; height:170px;">조작 메인 영역</div>
+          </div>
+          <div class="placeholder" style="height:70px;">하단 이벤트 로그 / 안내</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. 정보량 많은 콘솔형</h3>
+      <p>상태 확인은 편하지만, 화면 복잡도가 빨리 올라간다.</p>
+    </div>
+  </div>
+</div>
+
+<div class="pros-cons" style="margin-top:24px;">
+  <div class="pros">
+    <h4>추천안</h4>
+    <ul>
+      <li><strong>B</strong>: 입장 흐름과 실제 조작 흐름을 분리하기 쉽다.</li>
+      <li>세션 코드, 플레이어 식별, 연결 실패 처리 넣기가 가장 자연스럽다.</li>
+      <li>조작 화면은 가볍게 유지하면서도 운영성이 확보된다.</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>주의점</h4>
+    <ul>
+      <li>A는 빠르지만 나중에 입장 관리가 꼭 다시 필요해질 가능성이 크다.</li>
+      <li>C는 MVP 단계에서 정보가 많아져 조작 집중도가 떨어질 수 있다.</li>
+    </ul>
+  </div>
+</div>

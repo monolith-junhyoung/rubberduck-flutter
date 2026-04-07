@@ -1,0 +1,203 @@
+<h2>모바일 컨트롤 테마 방향</h2>
+<p class="subtitle">캔버스 화면의 분위기를 유지하면서 세로형 한 손 컨트롤 앱으로 옮긴 비교안</p>
+
+<style>
+  .mobile-grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:20px; }
+  .phone {
+    background:linear-gradient(180deg,#07101f 0%,#050914 100%);
+    border:1px solid rgba(80,110,180,.28);
+    border-radius:28px;
+    min-height:640px;
+    padding:16px;
+    box-shadow:0 30px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+    position:relative;
+    overflow:hidden;
+  }
+  .phone::before {
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size:28px 28px;
+    opacity:.35;
+    pointer-events:none;
+  }
+  .phone > * { position:relative; z-index:1; }
+  .topline { font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#7aa8ff; margin-bottom:6px; font-weight:700; }
+  .title { font-size:22px; font-weight:800; margin-bottom:14px; }
+  .chips { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .chip {
+    border:1px solid rgba(95,118,168,.3);
+    background:rgba(15,23,40,.72);
+    border-radius:14px;
+    padding:8px 10px;
+    min-width:88px;
+  }
+  .chip .k { font-size:10px; color:#7c89a7; margin-bottom:3px; }
+  .chip .v { font-size:13px; font-weight:700; }
+  .pad-area {
+    border:1px solid rgba(95,118,168,.22);
+    border-radius:24px;
+    background:
+      radial-gradient(circle at 50% 42%, rgba(91,130,255,.18), transparent 28%),
+      linear-gradient(180deg, rgba(12,18,32,.9) 0%, rgba(8,12,22,.96) 100%);
+    min-height:300px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:14px;
+  }
+  .duck {
+    width:112px; height:112px; border-radius:999px;
+    background:radial-gradient(circle at 35% 30%, #ffe789 0%, #f1ca48 62%, #c99518 100%);
+    box-shadow:0 0 38px rgba(254,223,100,.28);
+    position:relative;
+  }
+  .duck::before, .duck::after {
+    content:""; position:absolute; background:#172030; border-radius:999px;
+  }
+  .duck::before { width:8px; height:8px; left:34px; top:38px; }
+  .duck::after { width:8px; height:8px; left:54px; top:42px; }
+  .beak {
+    position:absolute; width:28px; height:18px; right:16px; top:48px;
+    background:linear-gradient(180deg,#ffbd57 0%,#f39a2a 100%);
+    border-radius:14px;
+  }
+  .hold-label {
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+    font-size:12px; color:#c9d4ec;
+  }
+  .buttons { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  .button {
+    border-radius:18px;
+    background:linear-gradient(180deg, rgba(31,41,66,.96), rgba(20,27,45,.96));
+    border:1px solid rgba(103,121,162,.28);
+    height:54px;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800;
+  }
+  .accent { color:#89b2ff; }
+  .stop { color:#ffffff; background:linear-gradient(180deg, rgba(82,98,132,.96), rgba(43,52,76,.96)); }
+  .variant-b .pad-area {
+    background:
+      radial-gradient(circle at 50% 55%, rgba(63,215,255,.18), transparent 32%),
+      linear-gradient(180deg, rgba(13,26,36,.95) 0%, rgba(7,13,21,.98) 100%);
+  }
+  .variant-b .duck { box-shadow:0 0 48px rgba(95,235,255,.22); }
+  .variant-c .pad-area {
+    min-height:260px;
+    justify-content:flex-start;
+    align-items:flex-end;
+    padding:18px;
+    background:linear-gradient(180deg, rgba(12,18,32,.9) 0%, rgba(8,12,22,.96) 100%);
+  }
+  .vector-card {
+    border:1px solid rgba(95,118,168,.22);
+    border-radius:18px;
+    padding:12px;
+    background:rgba(12,18,32,.82);
+    color:#c9d4ec;
+    font-size:12px;
+    width:100%;
+  }
+  @media (max-width: 1100px) { .mobile-grid { grid-template-columns:1fr; } }
+</style>
+
+<div class="mobile-grid">
+  <div class="card option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-body">
+      <h3>A. Mini Control Room</h3>
+      <p>캔버스 화면을 가장 충실하게 축소한 버전. 다크 네이비, 상태 칩, 발광 덕, 패널 톤을 그대로 유지.</p>
+      <div class="phone">
+        <div class="topline">Azure Web Pub/Sub</div>
+        <div class="title">Duck Control</div>
+        <div class="chips">
+          <div class="chip"><div class="k">연결</div><div class="v">Live</div></div>
+          <div class="chip"><div class="k">카운트다운</div><div class="v">00:08</div></div>
+          <div class="chip"><div class="k">깃발</div><div class="v">Duck 1</div></div>
+        </div>
+        <div class="pad-area">
+          <div class="duck"><div class="beak"></div></div>
+          <div class="hold-label">Hold to steer</div>
+        </div>
+        <div class="buttons">
+          <div class="button accent">좌</div>
+          <div class="button stop">정지</div>
+          <div class="button accent">우</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-body variant-b">
+      <h3>B. Water Sonar</h3>
+      <p>같은 다크 테마지만 물결/센서 느낌을 강화한 버전. 자이로 중심 앱이라는 인상을 더 강하게 줌.</p>
+      <div class="phone variant-b">
+        <div class="topline">Duck Motion Link</div>
+        <div class="title">Gyro Relay</div>
+        <div class="chips">
+          <div class="chip"><div class="k">상태</div><div class="v">Armed</div></div>
+          <div class="chip"><div class="k">입력</div><div class="v">Diagonal</div></div>
+          <div class="chip"><div class="k">깃발</div><div class="v">Duck 2</div></div>
+        </div>
+        <div class="pad-area">
+          <div class="duck"><div class="beak"></div></div>
+          <div class="hold-label">Touch and tilt</div>
+        </div>
+        <div class="buttons">
+          <div class="button accent">좌</div>
+          <div class="button stop">정지</div>
+          <div class="button accent">우</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-body variant-c">
+      <h3>C. Tactical Minimal</h3>
+      <p>캔버스의 분위기는 유지하되 훨씬 건조하고 장치적인 버전. 서버 입력 벡터를 보는 콘솔 감각이 강함.</p>
+      <div class="phone variant-c">
+        <div class="topline">Pub/Sub Session #1</div>
+        <div class="title">Input Vector</div>
+        <div class="chips">
+          <div class="chip"><div class="k">연결</div><div class="v">Stable</div></div>
+          <div class="chip"><div class="k">Flag</div><div class="v">Duck 1</div></div>
+        </div>
+        <div class="pad-area">
+          <div class="vector-card">
+            x: -0.62<br/>
+            y: 0.71<br/>
+            magnitude: 0.94<br/>
+            resolved: upLeft
+          </div>
+        </div>
+        <div class="buttons">
+          <div class="button accent">좌</div>
+          <div class="button stop">정지</div>
+          <div class="button accent">우</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pros-cons" style="margin-top:24px;">
+  <div class="pros">
+    <h4>추천</h4>
+    <ul>
+      <li><strong>A</strong>를 기본으로 두는 게 가장 안전합니다.</li>
+      <li>첨부 캔버스의 브랜드 톤을 가장 자연스럽게 계승합니다.</li>
+      <li>모바일에서도 과하게 복잡하지 않고, 러버덕 아이덴티티가 유지됩니다.</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>조정 포인트</h4>
+    <ul>
+      <li>B는 멋있지만 물/센서 인상이 강해서 게임 테마보다 장치 테마가 앞설 수 있습니다.</li>
+      <li>C는 디버그 화면에는 좋지만 플레이어용 메인 화면으로는 차가울 수 있습니다.</li>
+    </ul>
+  </div>
+</div>
