@@ -1,150 +1,80 @@
-# 청소난투(욕실의 난) 앱 저장소
+# 청소난투(욕실의 난) 모바일 컨트롤러
 
-`청소난투(욕실의 난)`은 욕실 테마의 4인 실시간 개인전 러버덕 난투 게임이다.
+`청소난투(욕실의 난)`은 욕실 테마의 4인 러버덕 난투 게임이다.  
+이 저장소는 그중 `플레이어용 모바일 컨트롤러 앱`을 구현한다.
 
-이 저장소는 전체 시스템 중 `모바일 앱(게임 콘솔)` 구현을 담당한다.  
-웹 캔버스는 게임 장면과 장애물을 렌더링하고, 이 앱은 플레이어의 조작 입력을 수집해서 서버로 전달하는 역할을 가진다.
+웹 캔버스는 게임 장면과 장애물을 렌더링하고, 이 앱은 한 손 세로형 UX로 이동 입력을 만들어 `Azure Web PubSub`로 전달한다.
 
-## 1. 프로젝트 목표
+## 현재 구현 목표
 
-- 러버덕 플레이어를 조작하는 모바일 컨트롤러 앱 구현
-- 자이로스코프 기반 이동 입력 처리
-- 서버에 이동 이벤트 발행
-- 게임 진행 상태를 앱에서 최소 수준으로 확인
-- 추후 깃발 상태, 연결 상태, 세션 상태를 함께 표시
+- 플레이어가 모바일 앱으로 러버덕을 조작
+- 기기를 기울인 방향을 유지하면 이동이 이어지는 `tilt 기반 입력`
+- `좌 / 정지 / 우` 보조 버튼 제공
+- 세션 입장과 최소 상태 표시
+- `Azure Web PubSub` 기반 실시간 송수신
 
-## 2. 게임 요약
+## UX 방향
 
-- 장르: 4인 실시간 개인전
-- 핵심 목표: 맵에 숨겨진 `깃발(상징물)`을 차지하고 오래 들고 있기
-- 충돌 규칙: 플레이어끼리 부딪히면 깃발 탈취 가능
-- 랭킹 규칙:
-  - 깃발 보유 누적 시간이 가장 긴 플레이어가 우승
-  - 2등, 3등도 보유 시간 순으로 결정
-  - 종료 시점에 깃발을 들고 있으면 보너스 점수 부여
+- 화면 방향: `세로모드`
+- 사용 방식: `한 손`
+- 메인 조작: `hold to steer`
+- 자이로/센서 철학:
+  - 화면 중앙 영역을 누르고 있을 때만 센서 입력 활성
+  - 손을 떼면 즉시 정지
+  - 앱이 백그라운드로 가도 정지
 
-## 3. 게임 시나리오
+## 비주얼 방향
 
-- 게임 시작 시 4명이 동시에 접속
-- 플레이어는 맵의 각 모서리에서 시작
-- 게임 시간은 현재 기준 `무제한`
-- 플레이어는 깃발을 찾고 빼앗고 오래 유지하는 방향으로 플레이
-- 장애물은 MVP 테스트 이후 세기와 주기를 확정
+- 테마명: `Mini Control Room`
+- 특징:
+  - 다크 네이비 배경
+  - 얇은 그리드 패턴
+  - 둥근 패널
+  - 블루 포인트
+  - 발광 러버덕 포인트
 
-## 4. 장애물 기획
+## 현재 화면 구조
 
-### 배수구
+### 1. 입장 오버레이
 
-- 맵 중앙 고정
-- 주기적으로 열리며 플레이어를 끌어당김
-- 현재 우선순위가 가장 높은 장애물
+- 플레이어 이름 입력
+- 세션 코드 입력
+- `입장하기` 버튼
 
-### 수도꼭지
+### 2. 상단 상태 바
 
-- 주기적으로 강한 물줄기가 발생
-- 러버덕을 특정 방향으로 밀어냄
-
-### 비치볼
-
-- 통과할 수 없는 고정 장애물
-- MVP 이후 실제 도입 여부 판단
-
-## 5. 캐릭터 및 상태
-
-### 스킨
-
-- 일반 러버덕
-- 깃발을 든 러버덕
-
-### 플레이어 상태
-
-- 현재 깃발 보유 여부
-- 깃발 보유 누적 시간
-- 마지막 순간에 깃발을 들고 있었는지 여부
 - 연결 상태
-- 최근 입력 방향
+- 카운트다운
+- 현재 깃발 보유자
 
-## 6. 캔버스/서버/앱 역할 분리
+### 3. 중앙 조작 영역
 
-### 캔버스
+- `Hold to steer`
+- tilt 벡터 상태 피드백
+- 러버덕 포컬 오브젝트
 
-- 해상도 기준: `1700 x 1080`
-- 맵, 러버덕, 깃발, 장애물, 배경 영상 렌더링
-- 장애물 등장 시점에 맞춰 효과 트리거
-- 4명의 깃발 보유 시간과 실시간 순위 표시
+### 4. 하단 보조 버튼
 
-### 서버
+- `좌`
+- `정지`
+- `우`
 
-- 실시간 이벤트 중계와 상태 동기화 담당
-- 후보 기술: `Azure Web PubSub`
-- 이동 이벤트 수신
-- 플레이어 상태 집계
-- 깃발 보유 시간 누적
-- 장애물 타이밍 브로드캐스트
+## 입력 모델
 
-### 모바일 앱
+앱 내부 이동은 `벡터 기반`이다.
 
-- 플레이어 조작 전용 인터페이스
-- 자이로스코프 기반 이동값 계산
-- 앞/뒤/좌/우/대각선 이동 전달
-- 회전 기능은 후순위 옵션
-- 서버와의 통신은 `MQTT` 기준으로 검토
+필드:
 
-## 7. 앱 MVP 범위
-
-- 플레이어 식별값 보유
-- 현재 연결 상태 표시
-- 이동 입력 생성
-- 서버로 이동 이벤트 발행
-- 내 플레이어 상태 조회
-- 전체 플레이어의 깃발 보유 시간 표시
-- 현재 깃발 보유자 표시
-- 게임 시작 카운트다운 표시
-
-## 8. 앱 비MVP 범위
-
-- 정교한 회전 제어
-- 복잡한 애니메이션
-- 배경음악 제어
-- 관리자용 세션 운영 화면
-- 장애물 수동 제어 기능
-
-## 9. 앱 구조
-
-현재 프로젝트는 아래 구조를 기준으로 확장한다.
-
-- `lib/app`
-  - 앱 진입점과 전역 MaterialApp 설정
-- `lib/core/models`
-  - 이동 명령, 플레이어 상태, 세션 상태 같은 공용 모델
-- `lib/features/controller/presentation`
-  - 모바일 컨트롤러 UI
-- `lib/features/controller/presentation/widgets`
-  - 방향 패드 등 재사용 UI 위젯
-
-## 10. 초기 화면 요구사항
-
-- 게임명 또는 세션명 표시
-- 서버 연결 상태 표시
-- 게임 시작 카운트다운 표시
-- 내 플레이어 상태 표시
-- 4명의 깃발 보유 시간 표시
-- 이동 입력용 조작 패드 제공
-- 자이로 입력 연결 전까지는 버튼 입력으로 대체 가능해야 함
-
-## 11. 이동 이벤트 초안
-
-앱은 최소한 아래 정보를 서버에 전달할 수 있어야 한다.
-
-- `playerId`
-- `direction`
 - `x`
 - `y`
-- `source`
-- `sentAt`
+- `magnitude`
+- `active`
 
-### direction 예시
+서버 또는 캔버스는 이를 바탕으로 `8방향`으로 해석할 수 있다.
 
+지원 방향:
+
+- `idle`
 - `up`
 - `down`
 - `left`
@@ -153,54 +83,151 @@
 - `upRight`
 - `downLeft`
 - `downRight`
-- `idle`
 
-### source 예시
+## 센서 해석
 
-- `buttons`
-- `gyroscope`
+현재 구현은 `accelerometer 기반 tilt delta`를 사용한다.
 
-## 12. 서버 연동 초안
+즉:
 
-MQTT 또는 유사 pub/sub 인터페이스 기준으로 아래 흐름을 가정한다.
+- 단순 회전 속도가 아니라
+- 기기를 기울인 방향 변화를 벡터로 정규화해서 사용한다.
 
-- 앱은 이동 입력을 발행
-- 서버는 플레이어 상태와 세션 상태를 구독 가능한 형태로 중계
-- 캔버스는 서버 상태를 받아 게임 화면을 렌더링
+기본 규칙:
 
-예상 이벤트 분류:
+- dead zone 존재
+- 입력값 clamp
+- hold 중에만 활성
 
+실기기에서 감도와 축 방향은 추가 튜닝이 필요할 수 있다.
+
+## 실시간 통신
+
+### 사용 기술
+
+- `Azure Web PubSub`
+
+### 현재 연결 방식
+
+앱은 `Client Access URL`을 런타임으로 주입받아 접속한다.
+
+예:
+
+```bash
+flutter run --dart-define=RUBBERDUCK_PUBSUB_CLIENT_URL='wss://monolith.webpubsub.azure.com/client/hubs/rubberduck?access_token=...'
+```
+
+### 보안 원칙
+
+- `AccessKey`와 연결 문자열은 앱 코드에 넣지 않는다
+- 앱에는 `Client Access URL` 또는 negotiate 결과만 전달한다
+
+## Web PubSub 메시지 흐름
+
+### 송신
+
+- `session.join`
 - `controller.move`
+- `controller.stop`
+
+실제 Web PubSub 전송은 `sendToGroup` 프레임으로 감싼다.
+
+### 수신
+
 - `session.state`
-- `player.state`
 - `flag.state`
-- `obstacle.trigger`
+- `player.assignment`
 
-## 13. 개발 우선순위
+현재 구현은 위 세 이벤트를 수신해서 상태 바와 플레이어 식별값에 반영한다.
 
-1. Flutter 앱 기본 구조 확정
-2. 컨트롤러 화면 구성
-3. 이동 이벤트 모델 정의
-4. 플레이어 상태 모델 정의
-5. 연결 상태 추상화
-6. 자이로 입력 연결
-7. MQTT 송수신 계층 추가
+## 현재 코드 구조
 
-## 14. 현재 구현 상태
+### 앱 / 테마
 
-- 로컬 Git 저장소 초기화 완료
-- Flutter 모바일 앱 기본 프로젝트 생성 완료
-- 조작 앱 기준 초기 구조 생성 완료
-- README 기반 요구사항 정리 완료
+- [lib/app/app.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/app/app.dart)
+- [lib/app/theme/app_colors.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/app/theme/app_colors.dart)
+- [lib/app/theme/app_theme.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/app/theme/app_theme.dart)
 
-## 15. 다음 구현 후보
+### 도메인 모델
 
-- 자이로스코프 패키지 선정
-- MQTT 클라이언트 계층 추가
-- 실제 세션 상태 스트림 연결
-- 플레이어별 식별 및 재접속 처리
-- 서버 이벤트 포맷 확정
+- [lib/core/models/control_vector.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/core/models/control_vector.dart)
+- [lib/core/models/movement_command.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/core/models/movement_command.dart)
+- [lib/core/models/session_join_request.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/core/models/session_join_request.dart)
+- [lib/core/models/flag_state.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/core/models/flag_state.dart)
 
-## 16. 한 줄 요약
+### 컨트롤러 로직
 
-이 저장소는 `청소난투`의 모바일 컨트롤러 앱을 구현하기 위한 Flutter 기반 출발점이다.
+- [lib/features/controller/application/controller_view_state.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/application/controller_view_state.dart)
+- [lib/features/controller/application/controller_view_model.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/application/controller_view_model.dart)
+- [lib/features/controller/application/gyro_input_service.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/application/gyro_input_service.dart)
+- [lib/features/controller/application/move_transmission_policy.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/application/move_transmission_policy.dart)
+- [lib/features/controller/domain/direction_resolver.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/domain/direction_resolver.dart)
+
+### UI
+
+- [lib/features/controller/presentation/controller_home_page.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/presentation/controller_home_page.dart)
+- [lib/features/controller/presentation/widgets/join_overlay.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/presentation/widgets/join_overlay.dart)
+- [lib/features/controller/presentation/widgets/status_bar.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/presentation/widgets/status_bar.dart)
+- [lib/features/controller/presentation/widgets/gyro_hold_pad.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/presentation/widgets/gyro_hold_pad.dart)
+- [lib/features/controller/presentation/widgets/correction_controls.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/presentation/widgets/correction_controls.dart)
+- [lib/features/controller/presentation/widgets/vector_feedback.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/features/controller/presentation/widgets/vector_feedback.dart)
+
+### PubSub 인프라
+
+- [lib/infrastructure/pubsub/pubsub_config.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/infrastructure/pubsub/pubsub_config.dart)
+- [lib/infrastructure/pubsub/session_bootstrap_api.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/infrastructure/pubsub/session_bootstrap_api.dart)
+- [lib/infrastructure/pubsub/pubsub_client.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/infrastructure/pubsub/pubsub_client.dart)
+- [lib/infrastructure/pubsub/pubsub_message_codec.dart](/Users/junhyounglee/workspace/rubberduck-flutter/lib/infrastructure/pubsub/pubsub_message_codec.dart)
+
+## 현재 구현 상태
+
+완료:
+
+- Mini Control Room 테마
+- 세로형 단일 화면
+- 입장 오버레이
+- hold 기반 센서 활성
+- `좌 / 정지 / 우` 버튼
+- 벡터 기반 이동 모델
+- 8방향 해석기
+- mixed send policy
+- direct client access URL bootstrap
+- Web PubSub `join / move / stop` 송신
+- `session.state / flag.state / player.assignment` 수신 반영
+- lifecycle stop 안전장치
+
+아직 남은 핵심:
+
+- 실제 서버 포맷과 payload 필드 완전 일치 확인
+- 실기기 감도/축 튜닝
+- 연결 실패/재연결 UI 고도화
+- 전체 테스트 스위트 최종 점검
+
+## 테스트
+
+현재 주요 테스트:
+
+- widget layout test
+- direction resolver test
+- controller view model test
+- move transmission policy test
+- gyro input mapping test
+- realtime join flow test
+- pubsub codec test
+
+실행:
+
+```bash
+flutter test
+```
+
+## 참고
+
+현재 앱은 `로컬 모드`와 `실시간 모드`를 모두 지원한다.
+
+- `RUBBERDUCK_PUBSUB_CLIENT_URL` 미주입: 로컬 모드
+- `RUBBERDUCK_PUBSUB_CLIENT_URL` 주입: 실시간 접속 시도
+
+## 한 줄 요약
+
+이 저장소는 `청소난투`의 플레이어용 세로형 모바일 컨트롤러 앱이며, tilt 기반 입력과 Azure Web PubSub 실시간 통신을 중심으로 MVP를 구현 중이다.

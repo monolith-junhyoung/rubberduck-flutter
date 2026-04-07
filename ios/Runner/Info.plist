@@ -45,5 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSMotionUsageDescription</key>
+	<string>러버덕 조작을 위해 기기의 움직임을 사용합니다.</string>
 </dict>
 </plist>

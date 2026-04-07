@@ -1,297 +1,227 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import '../../../core/models/game_session_state.dart';
-import '../../../core/models/movement_command.dart';
-import '../../../core/models/player_status.dart';
-import 'widgets/directional_pad.dart';
+import '../../../app/runtime/runtime_controller_config.dart';
+import '../../../app/theme/app_colors.dart';
+import '../../../core/models/control_vector.dart';
+import '../application/controller_view_model.dart';
+import '../application/gyro_input_service.dart';
+import '../../../infrastructure/pubsub/pubsub_client.dart';
+import '../../../infrastructure/pubsub/session_bootstrap_api.dart';
+import 'widgets/correction_controls.dart';
+import 'widgets/debug_log_panel.dart';
+import 'widgets/gyro_hold_pad.dart';
+import 'widgets/status_bar.dart';
 
-class ControllerHomePage extends StatelessWidget {
-  const ControllerHomePage({super.key});
-
-  GameSessionState get mockState => GameSessionState(
-        sessionName: '청소난투 테스트 세션',
-        connectionLabel: '서버 연결 대기',
-        countdownSeconds: 5,
-        lastTriggeredObstacle: '배수구 대기',
-        players: const [
-          PlayerStatus(
-            playerId: 'duck-1',
-            displayName: 'Duck 1',
-            flagHoldDuration: Duration(seconds: 18),
-            isHoldingFlag: true,
-            hadFlagAtEnd: false,
-            isConnected: true,
-            lastInputLabel: 'upRight',
-          ),
-          PlayerStatus(
-            playerId: 'duck-2',
-            displayName: 'Duck 2',
-            flagHoldDuration: Duration(seconds: 12),
-            isHoldingFlag: false,
-            hadFlagAtEnd: false,
-            isConnected: true,
-            lastInputLabel: 'left',
-          ),
-          PlayerStatus(
-            playerId: 'duck-3',
-            displayName: 'Duck 3',
-            flagHoldDuration: Duration(seconds: 9),
-            isHoldingFlag: false,
-            hadFlagAtEnd: false,
-            isConnected: true,
-            lastInputLabel: 'idle',
-          ),
-          PlayerStatus(
-            playerId: 'duck-4',
-            displayName: 'Duck 4',
-            flagHoldDuration: Duration(seconds: 4),
-            isHoldingFlag: false,
-            hadFlagAtEnd: true,
-            isConnected: false,
-            lastInputLabel: 'down',
-          ),
-        ],
-      );
-
-  @override
-  Widget build(BuildContext context) {
-    final state = mockState;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('청소난투 콘솔'),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _SessionOverview(state: state),
-              const SizedBox(height: 16),
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final isWide = constraints.maxWidth >= 700;
-
-                    if (isWide) {
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: _PlayerStatusPanel(players: state.players),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: _ControllerPanel(
-                              onDirectionPressed: _handleDirectionPressed,
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-
-                    return ListView(
-                      children: [
-                        _PlayerStatusPanel(players: state.players),
-                        const SizedBox(height: 16),
-                        _ControllerPanel(
-                          onDirectionPressed: _handleDirectionPressed,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _handleDirectionPressed(MovementDirection direction) {
-    debugPrint('movement pressed: $direction');
-  }
-}
-
-class _SessionOverview extends StatelessWidget {
-  const _SessionOverview({required this.state});
-
-  final GameSessionState state;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              state.sessionName,
-              style: theme.textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                _StatusChip(
-                  label: '연결 상태',
-                  value: state.connectionLabel,
-                ),
-                _StatusChip(
-                  label: '시작 카운트다운',
-                  value: '${state.countdownSeconds}초',
-                ),
-                _StatusChip(
-                  label: '최근 장애물',
-                  value: state.lastTriggeredObstacle,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PlayerStatusPanel extends StatelessWidget {
-  const _PlayerStatusPanel({required this.players});
-
-  final List<PlayerStatus> players;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '플레이어 상태',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            for (final player in players) ...[
-              _PlayerStatusTile(player: player),
-              if (player != players.last) const Divider(height: 20),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PlayerStatusTile extends StatelessWidget {
-  const _PlayerStatusTile({required this.player});
-
-  final PlayerStatus player;
-
-  @override
-  Widget build(BuildContext context) {
-    final holdSeconds = player.flagHoldDuration.inSeconds;
-
-    return Row(
-      children: [
-        CircleAvatar(
-          child: Text(player.displayName.replaceAll('Duck ', 'D')),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(player.displayName),
-              const SizedBox(height: 4),
-              Text(
-                '깃발 보유 ${holdSeconds}s · 입력 ${player.lastInputLabel}',
-              ),
-            ],
-          ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(player.isHoldingFlag ? '깃발 보유 중' : '일반 상태'),
-            const SizedBox(height: 4),
-            Text(player.isConnected ? 'connected' : 'offline'),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _ControllerPanel extends StatelessWidget {
-  const _ControllerPanel({required this.onDirectionPressed});
-
-  final ValueChanged<MovementDirection> onDirectionPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '이동 컨트롤',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              '현재는 버튼 기반 입력만 연결되어 있다. 자이로스코프 입력은 다음 단계에서 이 패드와 같은 이벤트 모델로 연결한다.',
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: DirectionalPad(
-                onDirectionPressed: onDirectionPressed,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({
-    required this.label,
-    required this.value,
+class ControllerHomePage extends StatefulWidget {
+  const ControllerHomePage({
+    super.key,
+    this.runtimeConfig = const RuntimeControllerConfig(),
   });
 
-  final String label;
-  final String value;
+  final RuntimeControllerConfig runtimeConfig;
+
+  @override
+  State<ControllerHomePage> createState() => _ControllerHomePageState();
+}
+
+class _ControllerHomePageState extends State<ControllerHomePage>
+    with WidgetsBindingObserver {
+  late final ControllerViewModel _viewModel = ControllerViewModel(
+    bootstrapApi: widget.runtimeConfig.isRealtimeReady
+        ? DirectClientAccessBootstrapApi(
+            clientAccessUrl: widget.runtimeConfig.pubSubClientAccessUrl,
+          )
+        : null,
+    pubSubClient:
+        widget.runtimeConfig.isRealtimeReady ? WebSocketPubSubClient() : null,
+  );
+  final TiltInputService _gyroInputService = AccelerometerTiltInputService();
+  StreamSubscription<ControlVector>? _gyroSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    if (widget.runtimeConfig.autoJoinOnStart) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        unawaited(_attemptAutoJoin());
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFD8E1F0)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleSmall,
+    return AnimatedBuilder(
+      animation: _viewModel,
+      builder: (context, _) {
+        final state = _viewModel.state;
+
+        return Scaffold(
+          body: Stack(
+            children: [
+              const _GridBackground(),
+              SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Azure Web Pub/Sub',
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: AppColors.accent,
+                              letterSpacing: 2.2,
+                              fontWeight: FontWeight.w800,
+                            ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Duck Control',
+                        style:
+                            Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Text(
+                            widget.runtimeConfig.statusLabel,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            widget.runtimeConfig.runtimeModeLabel,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.white70),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      StatusBar(
+                        connectionLabel: state.connectionLabel,
+                        countdownLabel: state.countdownLabel,
+                        flagHolderLabel: state.flagHolderLabel,
+                      ),
+                      const SizedBox(height: 18),
+                      GyroHoldPad(
+                        vector: state.currentVector,
+                        direction: state.resolvedDirection,
+                        isActive: state.gyroHoldActive,
+                        onHoldStart: _handleHoldStart,
+                        onHoldEnd: _viewModel.onHoldEnded,
+                      ),
+                      const SizedBox(height: 18),
+                      CorrectionControls(
+                        onLeftPressed: _viewModel.onCorrectionLeft,
+                        onStopPressed: _viewModel.onStopPressed,
+                        onRightPressed: _viewModel.onCorrectionRight,
+                      ),
+                      if (state.showReconnectAction) ...[
+                        const SizedBox(height: 14),
+                        FilledButton(
+                          onPressed: _attemptAutoJoin,
+                          child: const Text('재연결'),
+                        ),
+                      ],
+                      const SizedBox(height: 18),
+                      DebugLogPanel(logs: state.debugLogs),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  void _handleHoldStart() {
+    _viewModel.onHoldStarted();
+    _gyroSubscription?.cancel();
+    _gyroSubscription = _gyroInputService.watchVectors().listen(
+      _viewModel.onGyroVectorChanged,
+    );
+  }
+
+  Future<void> _attemptAutoJoin() async {
+    if (!widget.runtimeConfig.isRealtimeReady) {
+      _viewModel.submitJoin();
+      return;
+    }
+
+    await _viewModel.submitJoinRealtime();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _viewModel.onAppLifecycleChanged(state);
+    if (state != AppLifecycleState.resumed) {
+      _gyroSubscription?.cancel();
+      _gyroSubscription = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _gyroSubscription?.cancel();
+    _viewModel.dispose();
+    super.dispose();
+  }
+}
+
+class _GridBackground extends StatelessWidget {
+  const _GridBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.bgTop,
+            AppColors.bgBottom,
+          ],
+        ),
+      ),
+      child: CustomPaint(
+        size: Size.infinite,
+        painter: _GridPainter(),
       ),
     );
   }
+}
+
+class _GridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0x10FFFFFF)
+      ..strokeWidth = 1;
+
+    const gap = 28.0;
+    for (var x = 0.0; x < size.width; x += gap) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    }
+    for (var y = 0.0; y < size.height; y += gap) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

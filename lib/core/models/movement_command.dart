@@ -1,3 +1,5 @@
+import 'control_vector.dart';
+
 enum MovementDirection {
   idle,
   up,
@@ -13,17 +15,23 @@ enum MovementDirection {
 class MovementCommand {
   const MovementCommand({
     required this.playerId,
+    required this.sessionCode,
+    required this.vector,
     required this.direction,
-    required this.x,
-    required this.y,
+    required this.active,
     required this.source,
     required this.sentAt,
   });
 
   final String playerId;
+  final String sessionCode;
+  final ControlVector vector;
   final MovementDirection direction;
-  final double x;
-  final double y;
+  final bool active;
   final String source;
   final DateTime sentAt;
+
+  double get x => vector.x;
+  double get y => vector.y;
+  double get magnitude => vector.magnitude;
 }

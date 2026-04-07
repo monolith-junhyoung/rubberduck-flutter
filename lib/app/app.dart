@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 
 import '../features/controller/presentation/controller_home_page.dart';
+import 'runtime/runtime_controller_config.dart';
+import 'theme/app_theme.dart';
 
 class RubberDuckApp extends StatelessWidget {
-  const RubberDuckApp({super.key});
+  const RubberDuckApp({super.key, this.runtimeConfig = const RuntimeControllerConfig()});
+
+  final RuntimeControllerConfig runtimeConfig;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '청소난투 콘솔',
+      title: '욕실의 난',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4A90E2),
-          brightness: Brightness.light,
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF5F8FC),
-        useMaterial3: true,
-      ),
-      home: const ControllerHomePage(),
+      theme: AppTheme.build(),
+      home: ControllerHomePage(runtimeConfig: runtimeConfig),
     );
   }
 }
