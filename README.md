@@ -13,6 +13,7 @@
 - launch 도메인: `https://duckpilot.vercel.app`
 - launch URL: `https://duckpilot.vercel.app/launch`
 - install URL: `https://duckpilot.vercel.app/install`
+- invalid URL: `https://duckpilot.vercel.app/invalid`
 
 ## 현재 구현 목표
 

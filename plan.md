@@ -118,12 +118,12 @@ https://duckpilot.vercel.app/launch?v=1&pubsub_url=<urlencoded-wss-url>
 - Modify: `ios/Runner/Info.plist`
 - Create: `ios/Runner/Runner.entitlements`
 
-- [ ] Change Android namespace and applicationId to `com.rubberduck.pilot`
-- [ ] Rename the Kotlin package path and update `MainActivity` package declaration
-- [ ] Update Android app label to `RubberDuck Pilot`
-- [ ] Add Android `https://duckpilot.vercel.app/launch` App Link filter and fallback custom scheme
-- [ ] Update iOS bundle identifier and display name
-- [ ] Add iOS associated domains entitlement for `applinks:duckpilot.vercel.app`
+- [x] Change Android namespace and applicationId to `com.rubberduck.pilot`
+- [x] Rename the Kotlin package path and update `MainActivity` package declaration
+- [x] Update Android app label to `RubberDuck Pilot`
+- [x] Add Android `https://duckpilot.vercel.app/launch` App Link filter and fallback custom scheme
+- [x] Update iOS bundle identifier and display name
+- [x] Add iOS associated domains entitlement for `applinks:duckpilot.vercel.app`
 
 ### Task 2: Documentation Alignment
 
@@ -131,9 +131,9 @@ https://duckpilot.vercel.app/launch?v=1&pubsub_url=<urlencoded-wss-url>
 - Modify: `README.md`
 - Modify: `plan.md`
 
-- [ ] Document `duckpilot.vercel.app` launch/install/invalid URLs
-- [ ] Document `com.rubberduck.pilot` identity set
-- [ ] Document that runtime deeplink handling is still pending implementation
+- [x] Document `duckpilot.vercel.app` launch/install/invalid URLs
+- [x] Document `com.rubberduck.pilot` identity set
+- [x] Document that runtime deeplink handling is still pending implementation
 
 ### Task 3: Runtime Launch Bootstrap
 
@@ -147,21 +147,21 @@ https://duckpilot.vercel.app/launch?v=1&pubsub_url=<urlencoded-wss-url>
 - Test: `test/app/launch/launch_link_parser_test.dart`
 - Test: `test/app/launch/launch_bootstrap_page_test.dart`
 
-- [ ] Write failing parser tests for valid and invalid launch URLs
-- [ ] Implement parser and runtime config injection
-- [ ] Add initial waiting screen and resolving state
-- [ ] Verify the app only auto-joins after a valid launch link is resolved
+- [x] Write failing parser tests for valid and invalid launch URLs
+- [x] Implement parser and runtime config injection
+- [x] Add initial waiting screen and resolving state
+- [x] Verify the app only auto-joins after a valid launch link is resolved
 
 ### Task 4: In-App Relaunch Handling
 
 **Files:**
-- Modify: `lib/features/controller/presentation/controller_home_page.dart`
-- Modify: `lib/features/controller/application/controller_view_model.dart`
-- Test: `test/features/controller/presentation/controller_home_page_test.dart`
+- Modify: `lib/features/controller/presentation/pilot_page.dart`
+- Modify: `lib/features/controller/application/pilot_view_model.dart`
+- Test: `test/app/launch/launch_bootstrap_page_test.dart` (warm-state confirmation coverage)
 
-- [ ] Write failing tests for warm-state relaunch confirmation
-- [ ] Implement confirmation dialog and reconnect flow
-- [ ] Verify decline keeps current session intact
+- [x] Write failing tests for warm-state relaunch confirmation
+- [x] Implement confirmation dialog and reconnect flow
+- [x] Verify decline keeps current session intact
 
 ### Task 5: Vercel Launcher Project
 

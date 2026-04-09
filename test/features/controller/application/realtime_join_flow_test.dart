@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rubberduck_flutter/core/models/control_vector.dart';
-import 'package:rubberduck_flutter/features/controller/application/controller_view_model.dart';
+import 'package:rubberduck_flutter/features/controller/application/pilot_view_model.dart';
 import 'package:rubberduck_flutter/infrastructure/pubsub/pubsub_client.dart';
 import 'package:rubberduck_flutter/infrastructure/pubsub/pubsub_config.dart';
 import 'package:rubberduck_flutter/infrastructure/pubsub/session_bootstrap_api.dart';
 
 void main() {
   test('successful realtime join connects and marks controller as joined', () async {
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       bootstrapApi: _FakeBootstrapApi.success(),
       pubSubClient: _FakePubSubClient(),
       playerNameGenerator: () => 'duck-4821',
@@ -28,7 +28,7 @@ void main() {
   test('publishes session join to pubsub after connecting', () async {
     final client = _FakePubSubClient();
     final logs = <String>[];
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       bootstrapApi: _FakeBootstrapApi.success(),
       pubSubClient: client,
       playerNameGenerator: () => 'duck-4821',
@@ -53,7 +53,7 @@ void main() {
   });
 
   test('failed bootstrap leaves controller disconnected with an error', () async {
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       bootstrapApi: _FakeBootstrapApi.failure(),
       pubSubClient: _FakePubSubClient(),
       playerNameGenerator: () => 'duck-4821',
@@ -71,7 +71,7 @@ void main() {
   test('publishes move and stop frames to the joined session group', () async {
     final client = _FakePubSubClient();
     final logs = <String>[];
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       bootstrapApi: _FakeBootstrapApi.success(),
       pubSubClient: client,
       playerNameGenerator: () => 'duck-4821',
@@ -121,7 +121,7 @@ void main() {
   test('applies inbound session and flag updates from pubsub messages', () async {
     final client = _FakePubSubClient();
     final logs = <String>[];
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       bootstrapApi: _FakeBootstrapApi.success(),
       pubSubClient: client,
       playerNameGenerator: () => 'duck-4821',
@@ -158,7 +158,7 @@ void main() {
 
   test('applies inbound player assignment to joined state', () async {
     final client = _FakePubSubClient();
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       bootstrapApi: _FakeBootstrapApi.success(),
       pubSubClient: client,
       playerNameGenerator: () => 'duck-4821',
@@ -184,7 +184,7 @@ void main() {
   test('logs ack and connection lifecycle updates from pubsub', () async {
     final client = _FakePubSubClient();
     final logs = <String>[];
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       bootstrapApi: _FakeBootstrapApi.success(),
       pubSubClient: client,
       playerNameGenerator: () => 'duck-4821',

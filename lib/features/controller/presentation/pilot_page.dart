@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../app/runtime/runtime_controller_config.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/models/control_vector.dart';
-import '../application/controller_view_model.dart';
+import '../application/pilot_view_model.dart';
 import '../application/gyro_input_service.dart';
 import '../../../infrastructure/pubsub/pubsub_client.dart';
 import '../../../infrastructure/pubsub/session_bootstrap_api.dart';
@@ -14,8 +14,8 @@ import 'widgets/debug_log_panel.dart';
 import 'widgets/gyro_hold_pad.dart';
 import 'widgets/status_bar.dart';
 
-class ControllerHomePage extends StatefulWidget {
-  const ControllerHomePage({
+class PilotPage extends StatefulWidget {
+  const PilotPage({
     super.key,
     this.runtimeConfig = const RuntimeControllerConfig(),
   });
@@ -23,12 +23,12 @@ class ControllerHomePage extends StatefulWidget {
   final RuntimeControllerConfig runtimeConfig;
 
   @override
-  State<ControllerHomePage> createState() => _ControllerHomePageState();
+  State<PilotPage> createState() => _PilotPageState();
 }
 
-class _ControllerHomePageState extends State<ControllerHomePage>
+class _PilotPageState extends State<PilotPage>
     with WidgetsBindingObserver {
-  late final ControllerViewModel _viewModel = ControllerViewModel(
+  late final PilotViewModel _viewModel = PilotViewModel(
     bootstrapApi: widget.runtimeConfig.isRealtimeReady
         ? DirectClientAccessBootstrapApi(
             clientAccessUrl: widget.runtimeConfig.pubSubClientAccessUrl,

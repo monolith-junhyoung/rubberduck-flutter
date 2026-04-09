@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'app/app.dart';
+import 'app/runtime/runtime_controller_config.dart';
 
 void main() {
-  runApp(const RubberDuckApp());
+  runApp(
+    RubberDuckApp(
+      runtimeConfig: RuntimeControllerConfig.fromEnvironment(),
+    ),
+  );
 }

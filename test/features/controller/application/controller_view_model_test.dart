@@ -2,11 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rubberduck_flutter/core/models/control_vector.dart';
 import 'package:rubberduck_flutter/core/models/movement_command.dart';
-import 'package:rubberduck_flutter/features/controller/application/controller_view_model.dart';
+import 'package:rubberduck_flutter/features/controller/application/pilot_view_model.dart';
 
 void main() {
   test('initial state seeds a random player name and fixed session code', () {
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       playerNameGenerator: () => 'duck-4821',
     );
 
@@ -16,7 +16,7 @@ void main() {
   });
 
   test('configured defaults enter joined local state without overlay input', () {
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       playerNameGenerator: () => 'duck-4821',
     );
 
@@ -31,7 +31,7 @@ void main() {
   });
 
   test('hold start and end toggle gyro activation safely', () {
-    final viewModel = ControllerViewModel();
+    final viewModel = PilotViewModel();
 
     viewModel.onHoldStarted();
     expect(viewModel.state.gyroHoldActive, isTrue);
@@ -55,7 +55,7 @@ void main() {
   });
 
   test('correction buttons force left right and stop states', () {
-    final viewModel = ControllerViewModel();
+    final viewModel = PilotViewModel();
 
     viewModel.onCorrectionLeft();
     expect(viewModel.state.resolvedDirection, MovementDirection.left);
@@ -69,7 +69,7 @@ void main() {
   });
 
   test('background lifecycle change forces stop and clears hold state', () {
-    final viewModel = ControllerViewModel();
+    final viewModel = PilotViewModel();
 
     viewModel.onHoldStarted();
     viewModel.onGyroVectorChanged(
@@ -89,7 +89,7 @@ void main() {
 
   test('writes tilt logs for movement updates', () {
     final logs = <String>[];
-    final viewModel = ControllerViewModel(
+    final viewModel = PilotViewModel(
       logger: logs.add,
     );
 

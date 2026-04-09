@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../features/controller/presentation/controller_home_page.dart';
+import 'launch/launch_bootstrap_page.dart';
 import 'runtime/runtime_controller_config.dart';
 import 'theme/app_theme.dart';
 
@@ -15,7 +15,7 @@ class RubberDuckApp extends StatelessWidget {
       title: '욕실의 난',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.build(),
-      home: ControllerHomePage(runtimeConfig: runtimeConfig),
+      home: LaunchBootstrapPage(runtimeConfig: runtimeConfig),
     );
   }
 }

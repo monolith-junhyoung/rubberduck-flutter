@@ -1,11 +1,28 @@
-const kRubberDuckPubSubClientUrl =
-    'wss://monolith.webpubsub.azure.com/client/hubs/rubburduck?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ3c3M6Ly9tb25vbGl0aC53ZWJwdWJzdWIuYXp1cmUuY29tL2NsaWVudC9odWJzL3J1YmJ1cmR1Y2siLCJpYXQiOjE3NzU2MTQxMzIsImV4cCI6MTc3NTY5ODEzMiwicm9sZSI6WyJ3ZWJwdWJzdWIuc2VuZFRvR3JvdXAiLCJ3ZWJwdWJzdWIuam9pbkxlYXZlR3JvdXAiXSwic3ViIjoibW9ub2xpdGgzIn0.w4Eh3i3x8mlu0KSdGZKuahQYWDqoplboPTYIfNKlTbY';
-
 class RuntimeControllerConfig {
-  const RuntimeControllerConfig({this.pubSubClientAccessUrl = kRubberDuckPubSubClientUrl, this.autoJoinOnStart = true});
+  const RuntimeControllerConfig({
+    this.pubSubClientAccessUrl = '',
+    this.autoJoinOnStart = false,
+  });
 
   factory RuntimeControllerConfig.fromEnvironment() {
-    return const RuntimeControllerConfig();
+    final configuredUrl = const String.fromEnvironment(
+      'RUBBERDUCK_PUBSUB_CLIENT_URL',
+      defaultValue: '',
+    );
+    if (configuredUrl.isEmpty) {
+      return const RuntimeControllerConfig();
+    }
+    return RuntimeControllerConfig(
+      pubSubClientAccessUrl: configuredUrl,
+      autoJoinOnStart: true,
+    );
+  }
+
+  factory RuntimeControllerConfig.fromPubSubUrl(String pubSubUrl) {
+    return RuntimeControllerConfig(
+      pubSubClientAccessUrl: pubSubUrl,
+      autoJoinOnStart: true,
+    );
   }
 
   final String pubSubClientAccessUrl;

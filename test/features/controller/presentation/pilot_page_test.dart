@@ -8,6 +8,8 @@ void main() {
     await tester.pumpWidget(
       const RubberDuckApp(
         runtimeConfig: RuntimeControllerConfig(
+          pubSubClientAccessUrl:
+              'wss://monolith.webpubsub.azure.com/client/hubs/rubberduck?access_token=test',
           autoJoinOnStart: false,
         ),
       ),

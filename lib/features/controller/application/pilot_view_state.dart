@@ -1,8 +1,8 @@
 import '../../../core/models/control_vector.dart';
 import '../../../core/models/movement_command.dart';
 
-class ControllerViewState {
-  const ControllerViewState({
+class PilotViewState {
+  const PilotViewState({
     required this.playerId,
     required this.playerName,
     required this.sessionCode,
@@ -22,8 +22,8 @@ class ControllerViewState {
     required this.showReconnectAction,
   });
 
-  factory ControllerViewState.initial() {
-    return const ControllerViewState(
+  factory PilotViewState.initial() {
+    return const PilotViewState(
       playerName: '',
       playerId: 'local-player',
       sessionCode: '',
@@ -33,11 +33,7 @@ class ControllerViewState {
       countdownLabel: '--:--',
       flagHolderLabel: '-',
       gyroHoldActive: false,
-      currentVector: ControlVector(
-        x: 0,
-        y: 0,
-        active: false,
-      ),
+      currentVector: ControlVector(x: 0, y: 0, active: false),
       resolvedDirection: MovementDirection.idle,
       debugLogs: <String>[],
       connectionSummary: 'idle',
@@ -66,7 +62,7 @@ class ControllerViewState {
   final String lastAckSummary;
   final bool showReconnectAction;
 
-  ControllerViewState copyWith({
+  PilotViewState copyWith({
     String? playerId,
     String? playerName,
     String? sessionCode,
@@ -85,7 +81,7 @@ class ControllerViewState {
     String? lastAckSummary,
     bool? showReconnectAction,
   }) {
-    return ControllerViewState(
+    return PilotViewState(
       playerId: playerId ?? this.playerId,
       playerName: playerName ?? this.playerName,
       sessionCode: sessionCode ?? this.sessionCode,
