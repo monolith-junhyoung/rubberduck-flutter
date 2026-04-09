@@ -141,11 +141,11 @@ https://duckpilot.vercel.app/launch?v=1&pubsub_url=<urlencoded-wss-url>
 - Modify: `lib/main.dart`
 - Modify: `lib/app/app.dart`
 - Modify: `lib/app/runtime/runtime_controller_config.dart`
-- Create: `lib/app/launch/launch_bootstrap_page.dart`
+- Create: `lib/app/launch/app_link_page.dart`
 - Create: `lib/app/launch/launch_link_parser.dart`
 - Create: `lib/app/launch/launch_state.dart`
 - Test: `test/app/launch/launch_link_parser_test.dart`
-- Test: `test/app/launch/launch_bootstrap_page_test.dart`
+- Test: `test/app/launch/app_link_page_test.dart`
 
 - [x] Write failing parser tests for valid and invalid launch URLs
 - [x] Implement parser and runtime config injection
@@ -157,7 +157,7 @@ https://duckpilot.vercel.app/launch?v=1&pubsub_url=<urlencoded-wss-url>
 **Files:**
 - Modify: `lib/features/controller/presentation/pilot_page.dart`
 - Modify: `lib/features/controller/application/pilot_view_model.dart`
-- Test: `test/app/launch/launch_bootstrap_page_test.dart` (warm-state confirmation coverage)
+- Test: `test/app/launch/app_link_page_test.dart` (warm-state confirmation coverage)
 
 - [x] Write failing tests for warm-state relaunch confirmation
 - [x] Implement confirmation dialog and reconnect flow
