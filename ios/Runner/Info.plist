@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Rubberduck Flutter</string>
+	<string>RubberDuck Pilot</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>rubberduck_flutter</string>
+	<string>RubberDuck Pilot</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -47,5 +47,18 @@
 	<true/>
 	<key>NSMotionUsageDescription</key>
 	<string>러버덕 조작을 위해 기기의 움직임을 사용합니다.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.rubberduck.pilot</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>rubberduckpilot</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

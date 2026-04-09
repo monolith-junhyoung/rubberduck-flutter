@@ -5,6 +5,15 @@
 
 웹 캔버스는 게임 장면과 장애물을 렌더링하고, 이 앱은 한 손 세로형 UX로 이동 입력을 만들어 `Azure Web PubSub`로 전달한다.
 
+## 현재 제품 식별자
+
+- 앱 이름: `RubberDuck Pilot`
+- Android package: `com.rubberduck.pilot`
+- iOS bundle id: `com.rubberduck.pilot`
+- launch 도메인: `https://duckpilot.vercel.app`
+- launch URL: `https://duckpilot.vercel.app/launch`
+- install URL: `https://duckpilot.vercel.app/install`
+
 ## 현재 구현 목표
 
 - 플레이어가 모바일 앱으로 러버덕을 조작
@@ -111,6 +120,12 @@
 
 앱은 `Client Access URL`을 런타임으로 주입받아 접속한다.
 
+향후 기본 진입점은 아래 launch 링크다.
+
+```text
+https://duckpilot.vercel.app/launch?v=1&pubsub_url=<urlencoded-wss-url>
+```
+
 예:
 
 ```bash
@@ -201,6 +216,7 @@ flutter run --dart-define=RUBBERDUCK_PUBSUB_CLIENT_URL='wss://monolith.webpubsub
 - 실제 서버 포맷과 payload 필드 완전 일치 확인
 - 실기기 감도/축 튜닝
 - 연결 실패/재연결 UI 고도화
+- launch 대기화면 및 딥링크 런타임 처리
 - 전체 테스트 스위트 최종 점검
 
 ## 테스트

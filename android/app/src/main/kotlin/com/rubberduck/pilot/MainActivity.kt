@@ -1,4 +1,4 @@
-package com.example.rubberduck_flutter
+package com.rubberduck.pilot
 
 import io.flutter.embedding.android.FlutterActivity
 
