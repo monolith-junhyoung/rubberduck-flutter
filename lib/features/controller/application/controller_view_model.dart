@@ -137,13 +137,13 @@ class ControllerViewModel extends ChangeNotifier {
       );
       await _connectionSubscription?.cancel();
       _connectionSubscription =
-          pubSubClient.connectionEvents.listen(_handleConnectionEvent);
+          pubSubClient.connectionEvents.listen(_onConnectionEvent);
       final config = await bootstrapApi.createConnection(
         SessionBootstrapRequest.fromJoinRequest(request),
       );
       await pubSubClient.connect(config);
       await _messageSubscription?.cancel();
-      _messageSubscription = pubSubClient.messages.listen(_handleInboundMessage);
+      _messageSubscription = pubSubClient.messages.listen(_onInboundMessage);
       await pubSubClient.joinGroup(config.group, ackId: _nextAckId());
       final joinPayload = PubSubMessageCodec.encodeJoin(
         request,
@@ -343,7 +343,7 @@ class ControllerViewModel extends ChangeNotifier {
     );
   }
 
-  void _handleInboundMessage(Map<String, dynamic> message) {
+  void _onInboundMessage(Map<String, dynamic> message) {
     _log('pubsub.recv', jsonEncode(message));
     final inboundType = message['event'] as String? ?? message['type'] as String? ?? '-';
     _state = _state.copyWith(lastReceiveSummary: inboundType);
@@ -390,7 +390,7 @@ class ControllerViewModel extends ChangeNotifier {
     }
   }
 
-  void _handleConnectionEvent(String event) {
+  void _onConnectionEvent(String event) {
     _log('pubsub.connection', event);
     _state = _state.copyWith(connectionSummary: event);
     if (event == 'connected') {

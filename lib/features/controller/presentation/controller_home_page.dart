@@ -118,7 +118,7 @@ class _ControllerHomePageState extends State<ControllerHomePage>
                         vector: state.currentVector,
                         direction: state.resolvedDirection,
                         isActive: state.gyroHoldActive,
-                        onHoldStart: _handleHoldStart,
+                        onHoldStart: _onHoldStart,
                         onHoldEnd: _viewModel.onHoldEnded,
                       ),
                       const SizedBox(height: 18),
@@ -147,7 +147,7 @@ class _ControllerHomePageState extends State<ControllerHomePage>
     );
   }
 
-  void _handleHoldStart() {
+  void _onHoldStart() {
     _viewModel.onHoldStarted();
     _gyroSubscription?.cancel();
     _gyroSubscription = _gyroInputService.watchVectors().listen(
