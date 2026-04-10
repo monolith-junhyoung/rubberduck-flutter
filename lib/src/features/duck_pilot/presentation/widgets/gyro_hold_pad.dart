@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-
-import '../../../../app/theme/app_colors.dart';
-import '../../../../core/models/control_vector.dart';
-import '../../../../core/models/movement_command.dart';
-import 'vector_feedback.dart';
+import 'package:rubberduck_flutter/src/app/theme/app_colors.dart';
+import 'package:rubberduck_flutter/src/core/models/control_vector.dart';
+import 'package:rubberduck_flutter/src/core/models/movement_command.dart';
+import 'package:rubberduck_flutter/src/features/duck_pilot/presentation/widgets/vector_feedback.dart';
 
 class GyroHoldPad extends StatelessWidget {
   const GyroHoldPad({
-    super.key,
     required this.vector,
     required this.direction,
     required this.isActive,
     required this.onHoldStart,
     required this.onHoldEnd,
+    super.key,
   });
 
   final ControlVector vector;
@@ -64,7 +63,7 @@ class GyroHoldPad extends StatelessWidget {
               ),
               child: Center(
                 child: Image.asset(
-                  'assets/images/rubber_duck_top.png',
+                  'assets/images/img_duck_pilot.png',
                   width: 188,
                   height: 144,
                   fit: BoxFit.contain,
